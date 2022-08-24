@@ -5,6 +5,7 @@ import com.capitalmarkets.app.data.entities.UserModel;
 import com.capitalmarkets.app.data.mappers.Imapper;
 import com.capitalmarkets.app.data.providers.IUserProvider;
 import com.capitalmarkets.app.dto.data.UserDTO;
+import com.capitalmarkets.app.dto.data.UserWithOutPassDTO;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +18,7 @@ public class UserProviderImpl implements IUserProvider {
     private final IUserDao userDao;
     private final Imapper<UserModel, UserDTO> mapper;
 
+    private  final Imapper<UserModel, UserWithOutPassDTO> mapperWithOutPass;
 
     @Override
     public UserDTO getUserByDni(String dni) {
@@ -45,10 +47,19 @@ public class UserProviderImpl implements IUserProvider {
         userDao.save(userModel);
     }
 
-    @Override
+/*    @Override
     public Collection<UserDTO> getAllUsers() {
 
         return userDao.findAll().stream().map(mapper::mapToDto).collect(Collectors.toList());
+    }*/
+
+    @Override
+    public UserWithOutPassDTO userWithOutPass(String mail) {
+        return userDao.getByMail(mail)
+            .map(mapperWithOutPass::mapToDto)
+                .orElse(new UserWithOutPassDTO("no existe ese usuario"))
+                ;
+
     }
 
 

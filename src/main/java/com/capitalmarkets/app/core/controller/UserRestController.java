@@ -1,12 +1,13 @@
 package com.capitalmarkets.app.core.controller;
 
 import com.capitalmarkets.app.core.services.IuserControllerService;
+import com.capitalmarkets.app.dto.core.LoginDTO;
 import com.capitalmarkets.app.dto.data.UserDTO;
+import com.capitalmarkets.app.dto.data.UserWithOutPassDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
+@CrossOrigin
 @RestController
 @RequestMapping("/user")
 public class UserRestController {
@@ -14,36 +15,23 @@ public class UserRestController {
     @Autowired
     private IuserControllerService iuserControllerService;
 
+    @PostMapping("/login")
+    public UserWithOutPassDTO login(@RequestBody LoginDTO loginDTO) {
+
+        return iuserControllerService.verifyPassword(loginDTO);
+    }
+
     @PostMapping("/register")
+    public UserWithOutPassDTO registerUser(@RequestBody UserDTO userDTO) {
 
-    public String registerUser(@RequestBody UserDTO userDTO) {
         iuserControllerService.register(userDTO);
-
-
-        return "creado";
+        return iuserControllerService.userWithOutPassByMail(userDTO.getMail());
     }
 
-
-    @GetMapping("/findUser")
-    public boolean findUserByMail(@RequestBody String mail) {
-
-        if (iuserControllerService.findByMail(mail) != null) {
-            System.out.println(iuserControllerService.findByMail(mail));
-            return true;
-        }
-
-        return false;
-
-    }
-
-
-    @GetMapping("/findAll")
-    public List<UserDTO> getAll() {
-
-        return iuserControllerService.getAllUsers();
-
-
-    }
-
+//    @GetMapping("/findAll")
+//    public List<UserDTO> getAll() {
+//        return iuserControllerService.getAllUsers();
+//
+//    }
 
 }
